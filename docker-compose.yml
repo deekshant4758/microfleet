@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: microfleet-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: microfleet
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # ✅ named volume mapping
+    ports:
+      - "5432:5432"
+    networks:
+      - microfleet-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d microfleet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: microfleet-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://admin:admin123@db:5432/microfleet
+      PORT: 8080
+    networks:
+      - microfleet-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  pgdata:   # ✅ declared as a top-level named volume (mapping, not list)
+
+networks:
+  microfleet-net:
+    driver: bridge

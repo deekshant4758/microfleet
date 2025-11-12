@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+// ✅ 1. Define Trip
+model Trip {
+  id              Int       @id @default(autoincrement())
+  origin          String
+  destination     String
+  distanceKm      Float?
+  startTime       DateTime  @default(now())
+  endTime         DateTime?
+  status          String    @default("scheduled")
+
+  driverId        Int
+  driver          Driver    @relation("DriverTrips", fields: [driverId], references: [id]) // Named Trip relation for clarity
+  vehicleId       Int
+  vehicle         Vehicle   @relation("VehicleTrips", fields: [vehicleId], references: [id]) // Named Trip relation for clarity
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ✅ 2. Vehicle (This side holds the *other* relation field)
+model Vehicle {
+  id          Int       @id @default(autoincrement())
+  model       String
+  regNumber   String    @unique
+  capacity    Int
+  status      String    @default("available")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // 1. The relation field on the opposite side (Driver) holds the FK.
+  driver      Driver?   @relation("VehicleAssignment")
+  // 2. Remove driverId/unique here, as Driver will hold the FK
+
+  trips       Trip[]    @relation("VehicleTrips")
+}
+
+// ✅ 3. Driver (This side holds the Foreign Key)
+model Driver {
+  id              Int       @id @default(autoincrement())
+  name            String
+  license         String    @unique
+  phone           String?
+  status          String    @default("active")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // ⭐️ Define fields and references ONLY HERE and NAME IT:
+  assignedVehicle Vehicle?  @relation("VehicleAssignment", fields: [vehicleId], references: [id])
+  vehicleId       Int?      @unique // The unique foreign key
+  
+  trips           Trip[]    @relation("DriverTrips")
+}

@@ -1,0 +1,21 @@
+{
+  "name": "microfleet",
+  "version": "1.0.0",
+  "description": "Fleet Management API",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "prisma:migrate": "npx prisma migrate dev",
+    "generate": "npx prisma generate"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "@prisma/client": "^5.10.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.10.2",
+    "nodemon": "^3.1.0"
+  }
+}
