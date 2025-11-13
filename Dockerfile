@@ -6,19 +6,12 @@ RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-# 2. Copy package files first for better layer caching
 COPY package*.json ./
-# Install ALL dependencies (dev and prod) because 'prisma generate' is a build step
-# which requires the full 'prisma' package (often a dev dependency).
+
 RUN npm install
 
-# 3. Copy the schema/prisma directory
-# This ensures 'npx prisma generate' can find the schema.prisma file.
-# Based on your structure: prisma/schema.prisma
 COPY prisma/ ./prisma/
 
-# 4. Generate Prisma Client
-# This generates the client in the node_modules folder of the builder stage.
 RUN npx prisma generate --no-engine
 
 # --- Production Ready Stage (Smaller Image) ---

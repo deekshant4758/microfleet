@@ -29,7 +29,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgres://admin:admin123@db:5432/microfleet
+      DATABASE_URL: mysql://root:1234@localhost:3306/fleetdb
       PORT: 8080
     networks:
       - microfleet-net

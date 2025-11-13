@@ -1,0 +1,17 @@
+/prisma
+    schema.prisma
+/src
+    /controllers
+        drivers.js
+        trips.js
+        vehicles.js
+    /routes
+        drivers.js
+        trips.js
+        vehicles.js
+    app.js
+    prismaClient.js
+.env
+.gitignore
+docker-compose.yaml
+dockerfile
