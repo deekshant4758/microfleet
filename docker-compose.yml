@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: microfleet
     volumes:
-      - pgdata:/var/lib/postgresql/data   # ✅ named volume mapping
+      - pgdata:/var/lib/postgresql/data   
     ports:
       - "5432:5432"
     networks:
@@ -29,7 +29,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: mysql://root:1234@localhost:3306/fleetdb
+      DATABASE_URL: mysql://<user>:<password>@localhost:3306/fleetdb
       PORT: 8080
     networks:
       - microfleet-net
